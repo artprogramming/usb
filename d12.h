@@ -1,6 +1,8 @@
 #ifndef __D12_H
 #define __D12_H
 
+#include <stdint.h>
+
 /* command codes */
 #define D12_READ_CHIP_ID		0xFD
 
