@@ -9,12 +9,12 @@ int main(void)
 {
 	serial_init();
 
+	printf("Welcome to the usb world!\n");
 	if (usb_init()) {
 		printf("usb initialize error!\n");
 		return -1;
 	}
 
-	printf("Welcome to the usb world!\n");
 	while (1);
 
 	return 0;

@@ -10,8 +10,4 @@ void serial_init(void)
 	TR1 = 1;
 
 	SCON = 0x01 << 6;
-	REN = 1;
-	ES = 1;
-
-	EA = 1;	
 }

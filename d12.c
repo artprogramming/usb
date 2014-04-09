@@ -59,6 +59,8 @@ uint16_t d12_read_id(void)
 
 void d12_init(void)
 {
+	EA = 1;
+
 	EX0 = 1;
 	IT0 = 0;
 

@@ -61,7 +61,11 @@ int usb_init(void)
 
 void usb_ep0_out(void)
 {
+	uint8_t status;
+
 	printf("usb_ep0_out\n");
+
+	status = d12_read_last_transaction(D12_EP0_OUT);
 }
 
 void usb_ep0_in(void)
