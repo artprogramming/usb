@@ -1,6 +1,7 @@
 CC	= sdcc
 
-OBJS	= main.rel led.rel serial.rel putchar.rel puts.rel printf.rel
+OBJS	= main.rel led.rel serial.rel putchar.rel puts.rel printf.rel \
+	  d12.rel delay.rel
 
 all:usb.bin
 
@@ -28,3 +29,5 @@ serial:serial.c configs.h
 putchar.rel:putchar.c
 puts.rel:puts.c
 printf.rel:printf.c
+d12.rel:d12.c d12.h
+delay.rel:delay.c
