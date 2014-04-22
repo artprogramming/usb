@@ -111,5 +111,6 @@ extern void d12_set_endpoint_status(uint8_t ep, uint8_t stall);
 extern void d12_acknowledge_setup(void);
 extern void d12_send_resume(void);
 extern uint16_t d12_read_current_frame_number(void);
+extern void d12_read_setup_packet(uint8_t *buf, uint8_t size);
 
 #endif /* __D12_H */

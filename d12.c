@@ -201,3 +201,10 @@ uint16_t d12_read_current_frame_number(void)
 
 	return num;
 }
+
+void d12_read_setup_packet(uint8_t *buf, uint8_t size)
+{
+	d12_read_buffer(D12_INDEX_EP1_OUT, buf, size);
+	d12_acknowledge_setup();
+	d12_clear_buffer();
+}
