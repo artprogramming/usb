@@ -94,7 +94,7 @@
 
 
 /* API */
-extern uint16_t d12_read_id(void);
+extern uint16_t d12_read_chip_id(void);
 extern void d12_init(void);
 extern void d12_disconnect(void);
 extern void d12_set_address_enable(uint8_t addr);

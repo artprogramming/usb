@@ -46,7 +46,7 @@ static uint8_t d12_read_byte(void)
 	return val;
 }
 
-uint16_t d12_read_id(void)
+uint16_t d12_read_chip_id(void)
 {
 	uint16_t id;
 
