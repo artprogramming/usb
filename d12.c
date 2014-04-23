@@ -180,9 +180,9 @@ void d12_set_endpoint_status(uint8_t ep, uint8_t stall)
 
 void d12_acknowledge_setup(void)
 {
-	d12_select_endpoint(D12_INDEX_EP0_IN);
+	d12_select_endpoint(D12_EPINDEX_0_IN);
 	d12_write_command(D12_CMD_ACKNOWLEDGE_SETUP);
-	d12_select_endpoint(D12_INDEX_EP0_OUT);
+	d12_select_endpoint(D12_EPINDEX_0_OUT);
 	d12_write_command(D12_CMD_ACKNOWLEDGE_SETUP);
 }
 
@@ -204,7 +204,7 @@ uint16_t d12_read_current_frame_number(void)
 
 void d12_read_setup_packet(uint8_t *buf, uint8_t size)
 {
-	d12_read_buffer(D12_INDEX_EP1_OUT, buf, size);
+	d12_read_buffer(D12_EPINDEX_0_OUT, buf, size);
 	d12_acknowledge_setup();
 	d12_clear_buffer();
 }

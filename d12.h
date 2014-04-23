@@ -23,12 +23,12 @@
 #define D12_CMD_READ_CURRENT_FRAME_NUMBER	0xF5
 
 
-#define D12_INDEX_EP0_OUT			0x00
-#define D12_INDEX_EP0_IN			0x01
-#define D12_INDEX_EP1_OUT			0x02
-#define D12_INDEX_EP1_IN			0x03
-#define D12_INDEX_EP2_OUT			0x04
-#define D12_INDEX_EP2_IN			0x05
+#define D12_EPINDEX_0_OUT			0x00
+#define D12_EPINDEX_0_IN			0x01
+#define D12_EPINDEX_1_OUT			0x02
+#define D12_EPINDEX_1_IN			0x03
+#define D12_EPINDEX_2_OUT			0x04
+#define D12_EPINDEX_2_IN			0x05
 
 
 #define D12_CHIP_ID				0x1012
