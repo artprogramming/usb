@@ -44,7 +44,7 @@ int reportkey(uint8_t key)
 
 	for (i = 0; i < 8; i++) {
 		if (new_report[i] != old_report[i]) {
-			d12_write_buffer(D12_INDEX_EP1_IN, new_report, 8);
+			d12_write_buffer(D12_EPINDEX_1_IN, new_report, 8);
 
 			for (j = 0; j < 8; j++) {
 				old_report[j] = new_report[j];
