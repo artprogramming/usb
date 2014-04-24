@@ -5,14 +5,19 @@
 #include "printf.h"
 #include "delay.h"
 
-void usb_isr(void) __interrupt 0
+extern void handle_ep0_out(void);
+extern void handle_ep0_in(void);
+
+void usb_irq(void) __interrupt 0
 {
 	uint16_t status = d12_read_interrupt_register();
 
 	switch (status) {
 	case D12_INT_EP0_OUT:
+		handle_ep0_out();
 		break;
 	case D12_INT_EP0_IN:
+		handle_ep0_in();
 		break;
 	case D12_INT_EP1_OUT:
 		break;
@@ -23,8 +28,10 @@ void usb_isr(void) __interrupt 0
 	case D12_INT_EP2_IN:
 		break;
 	case D12_INT_BUS_RESET:
+		printf("Bus reset\n");
 		break;
 	case D12_INT_SUSPEND:
+		printf("Go into suspend\n");
 		break;
 	case D12_INT_DMA_EOT:
 		break;
@@ -32,6 +39,19 @@ void usb_isr(void) __interrupt 0
 		printf("Unkown interrupt\n");
 		break;
 	}
+}
+
+void handle_ep0_out(void)
+{
+	uint8_t status = d12_read_last_transaction_status(D12_EPINDEX_0_OUT);
+
+	if (status & D12_LAST_TRANS_STATUS_SETUP_PACKET) {
+		usb_setup_request();
+	}
+}
+
+void handle_ep0_in(void)
+{
 }
 
 int usb_init(void)

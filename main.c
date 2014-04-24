@@ -1,6 +1,6 @@
 #include "printf.h"
 
-extern void usb_isr(void) __interrupt 0;
+extern void usb_irq(void) __interrupt 0;
 extern int  usb_init(void);
 extern void serial_init(void);
 
