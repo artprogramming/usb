@@ -19,6 +19,7 @@ void usb_irq(void) __interrupt 0
 {
 	uint16_t status = d12_read_interrupt_register();
 
+#if 0
 	switch (status) {
 	case D12_INT_EP0_OUT:
 		handle_ep0_out();
@@ -43,6 +44,20 @@ void usb_irq(void) __interrupt 0
 	default:
 		printf("Unkown interrupt\n");
 		break;
+	}
+#endif
+	if (status & D12_INT_EP0_OUT) {
+		handle_ep0_out();
+	} else if (status & D12_INT_EP0_IN) {
+		handle_ep0_in();
+	} else if (status & D12_INT_BUS_RESET) {
+	} else if (status & D12_INT_SUSPEND) {
+	} else if (status & D12_INT_EP1_OUT) {
+		d12_read_last_transaction_status(D12_EPINDEX_1_OUT);
+	} else if (status & D12_INT_EP1_IN) {
+		d12_read_last_transaction_status(D12_EPINDEX_1_IN);
+	} else {
+		printf("Unkown interrupt\n");
 	}
 }
 
