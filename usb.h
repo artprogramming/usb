@@ -13,6 +13,7 @@ extern void usb_standard_request(struct setup_packet *setup);
 extern void usb_get_descriptor(struct setup_packet *setup);
 extern void usb_set_address(uint8_t addr);
 extern void usb_set_configuration(uint8_t config);
+extern uint8_t usb_get_configuration(void);
 
 extern void usb_set_device_state(enum usb_device_state new_state);
 extern enum usb_device_state usb_get_device_state(void);

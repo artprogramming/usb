@@ -142,6 +142,7 @@ void usb_standard_request(struct setup_packet *setup)
 	case CLEAR_FEATURE:
 		break;
 	case GET_CONFIGURATION:
+		usb_get_configuration();
 		break;
 	case GET_DESCRIPTOR:
 		usb_get_descriptor(setup);
@@ -206,12 +207,19 @@ void usb_set_address(uint8_t addr)
 	usb_send_zero_length_packet();
 }
 
+static uint8_t g_current_configuration = 0;
 void usb_set_configuration(uint8_t config)
 {
 	usb_set_device_state(USB_STATE_CONFIGURED);
 
+	g_current_configuration = config;
 	d12_set_endpoint_enable(config);
 	usb_send_zero_length_packet();
+}
+
+uint8_t usb_get_configuration(void)
+{
+	return g_current_configuration;
 }
 
 static enum usb_device_state g_state = USB_STATE_NOTATTACHED;
