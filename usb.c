@@ -51,6 +51,7 @@ void usb_irq(void) __interrupt 0
 	} else if (status & D12_INT_EP0_IN) {
 		handle_ep0_in();
 	} else if (status & D12_INT_BUS_RESET) {
+		usb_set_device_state(USB_STATE_DEFAULT);
 	} else if (status & D12_INT_SUSPEND) {
 	} else if (status & D12_INT_EP1_OUT) {
 		d12_read_last_transaction_status(D12_EPINDEX_1_OUT);
@@ -199,14 +200,29 @@ void usb_get_descriptor(struct setup_packet *setup)
 
 void usb_set_address(uint8_t addr)
 {
+	usb_set_device_state(USB_STATE_ADDRESS);
+
 	d12_set_address_enable(addr);
 	usb_send_zero_length_packet();
 }
 
 void usb_set_configuration(uint8_t config)
 {
+	usb_set_device_state(USB_STATE_CONFIGURED);
+
 	d12_set_endpoint_enable(config);
 	usb_send_zero_length_packet();
+}
+
+static enum usb_device_state g_state = USB_STATE_NOTATTACHED;
+void usb_set_device_state(enum usb_device_state new_state)
+{
+	g_state = new_state;
+}
+
+enum usb_device_state usb_get_device_state(void)
+{
+	return g_state;
 }
 
 int usb_init(void)
@@ -222,6 +238,9 @@ int usb_init(void)
 	d12_disconnect();
 	delayms(100);
 	d12_init();
+
+	usb_set_device_state(USB_STATE_ATTACHED);
+	usb_set_device_state(USB_STATE_POWERED);
 
 	return 0;
 }
