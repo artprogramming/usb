@@ -80,7 +80,8 @@ void handle_ep0_in(void)
 	d12_read_last_transaction_status(D12_EPINDEX_0_IN);
 
 	if (remaining) {
-		usb_control_transfer(D12_EPINDEX_0_IN, buffer, MIN(remaining, EP_0_IN_LEN));
+		//usb_control_transfer(D12_EPINDEX_0_IN, buffer, MIN(remaining, EP_0_IN_LEN));
+		usb_send_data(D12_EPINDEX_0_IN, buffer, MIN(remaining, EP_0_IN_LEN));
 	} else if (need_zlp) {
 		usb_send_zero_length_packet();
 		need_zlp = 0;
@@ -92,13 +93,25 @@ void usb_send_descriptor(void *desc, uint8_t size)
 	buffer = (uint8_t *)desc;
 	remaining = size;
 
-	usb_control_transfer(D12_EPINDEX_0_IN, buffer, MIN(remaining, EP_0_IN_LEN));
+	//usb_control_transfer(D12_EPINDEX_0_IN, buffer, MIN(remaining, EP_0_IN_LEN));
+	usb_send_data(D12_EPINDEX_0_IN, buffer, MIN(remaining, EP_0_IN_LEN));
 }
 
-void usb_control_transfer(uint8_t ep, uint8_t *buf, uint8_t size)
+/*void usb_control_transfer(uint8_t ep, uint8_t *buf, uint8_t size)
 {
 	buffer += size;
 	remaining -= size;
+
+	if (remaining == 0 && size == EP_0_IN_LEN) {
+		need_zlp = 1;
+	}
+
+	d12_write_buffer(ep, buf, size);
+}*/
+void usb_send_data(uint8_t ep, uint8_t *buf, uint8_t size)
+{
+	remaining -= size;
+	buffer += size;
 
 	if (remaining == 0 && size == EP_0_IN_LEN) {
 		need_zlp = 1;

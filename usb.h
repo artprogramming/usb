@@ -5,7 +5,8 @@ extern void handle_ep0_out(void);
 extern void handle_ep0_in(void);
 
 extern void usb_send_descriptor(void *desc, uint8_t size);
-extern void usb_control_transfer(uint8_t ep, uint8_t *buf, uint8_t size);
+//extern void usb_control_transfer(uint8_t ep, uint8_t *buf, uint8_t size);
+extern void usb_send_data(uint8_t ep, uint8_t *buf, uint8_t size);
 extern void usb_send_zero_length_packet(void);
 
 extern void usb_setup_request(void);
