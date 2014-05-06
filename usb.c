@@ -226,9 +226,9 @@ void usb_set_configuration(uint8_t config)
 	usb_send_zero_length_packet();
 }
 
-uint8_t usb_get_configuration(void)
+void usb_get_configuration(void)
 {
-	return g_current_configuration;
+	d12_write_buffer(D12_EPINDEX_0_IN, &g_current_configuration, 1);
 }
 
 static enum usb_device_state g_state = USB_STATE_NOTATTACHED;
