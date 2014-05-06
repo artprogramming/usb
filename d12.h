@@ -34,6 +34,9 @@
 #define D12_CHIP_ID				0x1012
 
 
+#define EP_0_IN_LEN				16
+
+
 #define D12_MODE_CFG_NO_LAZYCLOCK		(1 << 1)
 #define D12_MODE_CFG_CLOCK_RUNNING		(1 << 2)
 #define D12_MODE_CFG_INTERRUPT			(1 << 3)

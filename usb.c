@@ -9,7 +9,6 @@
 #include "hid.h"
 #include "types.h"
 
-#define EP_0_IN_LEN 16
 
 extern int16_t usb_get_device_descriptor(const void **p);
 extern int16_t usb_get_configuration_descriptor(const void **p);
