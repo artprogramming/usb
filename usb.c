@@ -8,11 +8,8 @@
 #include "usb.h"
 #include "hid.h"
 #include "types.h"
+#include "descriptor.h"
 
-
-extern int16_t usb_get_device_descriptor(const void **p);
-extern int16_t usb_get_configuration_descriptor(const void **p);
-extern int16_t usb_get_report_descriptor(uint8_t interface, const void **p);
 
 void usb_irq(void) __interrupt 0
 {
@@ -203,7 +200,7 @@ void usb_get_descriptor(struct setup_packet *setup)
 	case DESC_HID:
 		break;
 	case DESC_REPORT:
-		len = usb_get_report_descriptor(0, &desc);
+		len = usb_get_report_descriptor(&desc);
 		usb_send_descriptor(desc, MIN(len, (uint8_t)setup->wLength));
 		break;
 	default:

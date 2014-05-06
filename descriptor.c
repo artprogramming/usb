@@ -7,14 +7,14 @@
 #include "ch9.h"
 #include "hid.h"
 
-struct configuration {
+struct usb_keyboard_configuration {
 	struct configuration_descriptor	config;
 	struct interface_descriptor	interface;
 	struct hid_descriptor		hid;
 	struct endpoint_descriptor	ep;
 };
 
-__code static uint8_t keyboard_report_descriptor[] = {
+__code static uint8_t report_descriptor[] = {
 	0x05, 0x01,		// Usage Page (Generic Desktop)
 	0x09, 0x06,		// Usage (Keyboard)
 	0xA1, 0x01,		// Collection (Application)
@@ -49,7 +49,7 @@ __code static uint8_t keyboard_report_descriptor[] = {
 	0xC0,			// End Collection
 };
 
-__code static struct device_descriptor keyboard_device_descriptor = {
+__code static struct device_descriptor device_descriptor = {
 	.bLength		= sizeof(struct device_descriptor),
 	.bDescriptorType	= DESC_DEVICE,
 	.bcdUSB			= 0x0110,
@@ -66,11 +66,10 @@ __code static struct device_descriptor keyboard_device_descriptor = {
 	.bNumConfigurations	= 0x01,
 };
 
-__code static struct configuration keyboard_configuration_descriptor = {
+__code static struct usb_keyboard_configuration configuration_descriptor = {
        {.bLength		= sizeof(struct configuration_descriptor),
 	.bDescriptorType	= DESC_CONFIGURATION,
-	.wTotalLength		= sizeof(keyboard_configuration_descriptor),
-	//.bNumInterface	= 0x02,
+	.wTotalLength		= sizeof(struct usb_keyboard_configuration),
 	.bNumInterfaces		= 0x01,
 	.bConfigurationValue	= 0x01,
 	.iConfiguration		= 0x00,
@@ -93,7 +92,7 @@ __code static struct configuration keyboard_configuration_descriptor = {
 	.bCountryCode		= 0x00,
 	.bNumDescriptors	= 0x01,
 	.bDescriptorType2	= DESC_REPORT,
-	.wDescriptorLength	= sizeof(keyboard_report_descriptor),},
+	.wDescriptorLength	= sizeof(report_descriptor),},
 
        {.bLength		= sizeof(struct endpoint_descriptor),
 	.bDescriptorType	= DESC_ENDPOINT,
@@ -105,28 +104,28 @@ __code static struct configuration keyboard_configuration_descriptor = {
 
 int16_t usb_get_device_descriptor(const void **p)
 {
-	*p = &keyboard_device_descriptor;
+	*p = &device_descriptor;
 
-	return sizeof(keyboard_device_descriptor);
+	return sizeof(device_descriptor);
 }
 
 int16_t usb_get_configuration_descriptor(const void **p)
 {
-	*p = &keyboard_configuration_descriptor;
+	*p = &configuration_descriptor;
 
-	return sizeof(keyboard_configuration_descriptor);
+	return sizeof(configuration_descriptor);
 }
 
-int16_t usb_get_hid_descriptor(uint8_t interface, const void **p)
+int16_t usb_get_hid_descriptor(const void **p)
 {
-	*p = &keyboard_configuration_descriptor.hid;
+	*p = &configuration_descriptor.hid;
 
-	return sizeof(keyboard_configuration_descriptor.hid);
+	return sizeof(configuration_descriptor.hid);
 }
 
-int16_t usb_get_report_descriptor(uint8_t interface, const void **p)
+int16_t usb_get_report_descriptor(const void **p)
 {
-	*p = keyboard_report_descriptor;
+	*p = report_descriptor;
 
-	return sizeof(keyboard_report_descriptor);
+	return sizeof(report_descriptor);
 }

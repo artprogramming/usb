@@ -31,7 +31,7 @@ puts.rel:puts.c
 printf.rel:printf.c
 d12.rel:d12.c d12.h
 delay.rel:delay.c
-usb.rel:usb.c printf.h delay.h ch9.h usb.h
+usb.rel:usb.c printf.h delay.h ch9.h usb.h d12.h hid.h types.h descriptor.h
 descriptor.rel:descriptor.c ch9.h hid.h
 key.rel:key.c delay.h
 reportkey.rel:reportkey.c d12.h key.h keycodes.h
