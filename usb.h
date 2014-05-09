@@ -11,6 +11,7 @@ extern void usb_send_zero_length_packet(void);
 
 extern void usb_setup_request(void);
 extern void usb_standard_request(struct setup_packet *setup);
+extern void usb_class_request(struct setup_packet *setup);
 extern void usb_get_descriptor(struct setup_packet *setup);
 extern void usb_set_address(uint8_t addr);
 extern void usb_set_configuration(uint8_t config);

@@ -1,7 +1,8 @@
 CC	= sdcc
 
 OBJS	= main.rel led.rel serial.rel putchar.rel puts.rel printf.rel \
-	  d12.rel delay.rel usb.rel descriptor.rel key.rel reportkey.rel
+	  d12.rel delay.rel usb.rel descriptor.rel key.rel reportkey.rel \
+	  hid.rel
 
 all:usb.bin
 
@@ -35,3 +36,4 @@ usb.rel:usb.c printf.h delay.h ch9.h usb.h d12.h hid.h types.h descriptor.h
 descriptor.rel:descriptor.c ch9.h hid.h
 key.rel:key.c delay.h
 reportkey.rel:reportkey.c d12.h key.h keycodes.h
+hid.rel:hid.c hid.h d12.h usb.h ch9.h 

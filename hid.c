@@ -1,164 +1,85 @@
 #include <stdint.h>
 
-#include "types.h"
-#include "printf.h"
 #include "ch9.h"
 #include "hid.h"
+#include "d12.h"
+#include "usb.h"
+#include "printf.h"
 
 
-extern int16_t usb_get_hid_descriptor(uint8_t interface, const void **p);
-extern int16_t usb_get_hid_report_descriptor(uint8_t interface, const void **p);
+#define HID_DEBUG	1
 
+static uint8_t this_protocol = 0;
 
-extern void usb_send_data_stage(char *buffer, uint16_t len);
-
-
-#define USB_HID_DESCRIPTOR_FUNC		usb_get_hid_descriptor
-#define USB_HID_REPORT_DESCRIPTOR_FUNC	usb_get_hid_report_descriptor
-
-
-#define HID_GET_IDLE_CALLBACK		hid_get_idle_callback
-#define HID_SET_IDLE_CALLBACK		hid_set_idle_callback
-#define HID_GET_PROTOCOL_CALLBACK	hid_get_protocol_callback
-#define HID_SET_PROTOCOL_CALLBACK	hid_set_protocol_callback
-
-
-#ifdef HID_GET_IDLE_CALLBACK
-int8_t hid_get_idle_callback(uint8_t interface, uint8_t report_id)
+void hid_class_request(struct setup_packet *setup)
 {
-	return 0;
-}
-#endif
-
-#ifdef HID_SET_IDLE_CALLBACK
-int8_t hid_set_idle_callback(uint8_t interface, uint8_t report_id,
-			     uint8_t idle_rate)
-{
-	return -1;
-}
-#endif
-
-#ifdef HID_GET_PROTOCOL_CALLBACK
-int8_t hid_get_protocol_callback(uint8_t interface)
-{
-	return -1;
-}
-#endif
-
-#ifdef HID_SET_PROTOCOL_CALLBACK
-int8_t hid_set_protocol_callback(uint8_t interface, uint8_t report_id)
-{
-	return -1;
-}
-#endif
-
-int8_t class_get_descriptor_request(struct setup_packet *setup)
-{
-	uint8_t interface = setup->wIndex;
-
-	if (setup->bRequest == GET_DESCRIPTOR &&
-	    setup->REQUEST.bmRequestType == 0x81) {
-		uint8_t descriptor = ((setup->wValue >> 8) & 0x00ff);
-
-		const void *desc;
-		int16_t len = -1;
-
-		if (descriptor == DESC_HID) {
-			len = USB_HID_DESCRIPTOR_FUNC(interface, &desc);
-		}
-		else if (descriptor == DESC_REPORT) {
-			len = USB_HID_REPORT_DESCRIPTOR_FUNC(interface, &desc);
-		}
-#ifdef USB_HID_PHYSICAL_DESCRIPTOR_FUNC
-		else if (descriptor == DESC_PHYSICAL) {
-			uint8_t descriptor_index = setup->wValue & 0x00ff;
-			len = USB_HID_PHYSICAL_DESCRIPTOR_FUNC(interface, descriptor_index, &desc);
-		}
-#endif
-		if (len < 0)
-			return -1;
-
-		usb_send_data_stage((void *)desc, MIN(len, setup->wLength));
-
-		return 0;
-	}	
+	switch (setup->bRequest) {
+	case GET_REPORT:
+		hid_get_report();
+		break;
+	case GET_IDLE:
+		hid_get_idle();
+		break;
+	case GET_PROTOCOL:
+		hid_get_protocol();
+		break;
+	case SET_REPORT:
+		hid_set_report();
+		break;
+	case SET_IDLE:
+		hid_set_idle();
+		break;
+	case SET_PROTOCOL:
+		hid_set_protocol(setup->wValue >> 8);
+		break;
+	default:
+		break;
+	}
 }
 
-int8_t class_setup_request(struct setup_packet *setup)
+void hid_get_protocol(void)
 {
-	uint8_t interface = setup->wIndex;
-
-#ifdef HID_GET_REPORT_CALLBACK
-	const void *desc;
-	int16_t len = -1;
-	if (setup->bRequest == GET_REPORT &&
-	    setup->REQUEST.bmRequestType == 0xa1) {
-		uint8_t report_type = (setup->wValue >> 8) & 0x00ff;
-		uint8_t report_id = setup->wValue & 0x00ff;
-		len = HID_GET_REPORT_CALLBACK(interface,
-					      report_type, report_id,
-					      &desc);
-		if (len < 0)
-			return -1;
-
-		usb_send_data_stage((void*)desc, MIN(len, setup->wLength));
-		return 0;
-	}
+#ifdef HID_DEBUG
+	printf("Get_Protocol Request\n");
 #endif
+	d12_write_buffer(D12_EPINDEX_0_IN, &this_protocol, 1);
+}
 
-#ifdef HID_SET_REPORT_CALLBACK
-	if (setup->bRequest == SET_REPORT &&
-	    setup->REQUEST.bmRequestType == 0x21) {
-		uint8_t report_type = (setup->wValue >> 8) & 0x00ff;
-		uint8_t report_id = setup->wValue & 0x00ff;
-		int8_t res = HID_SET_REPORT_CALLBACK(interface,
-						     report_type, report_id);
-		return res;
-	}
+void hid_set_protocol(uint8_t protocol)
+{
+#ifdef HID_DEBUG
+	printf("Set_Protocol Request\n");
 #endif
+	this_protocol = protocol;
+	
+	usb_send_zero_length_packet();
+}
 
-#ifdef HID_GET_IDLE_CALLBACK
-	if (setup->bRequest == GET_IDLE &&
-	    setup->REQUEST.bmRequestType == 0xa1) {
-		uint8_t report_id = setup->wValue & 0x00ff;
-		uint8_t res = HID_GET_IDLE_CALLBACK(interface, report_id);
-
-		usb_send_data_stage((char *)&res, 1);
-	}
+void hid_get_report(void)
+{
+#ifdef HID_DEBUG
+	printf("Get_Report Request\n");
 #endif
+}
 
-#ifdef HID_SET_IDLE_CALLBACK
-	if (setup->bRequest == SET_IDLE &&
-	    setup->REQUEST.bmRequestType == 0x21) {
-		uint8_t duration = (setup->wValue >> 8) & 0x00ff;
-		uint8_t report_id = setup->wValue & 0x00ff;
-		uint8_t res = HID_SET_IDLE_CALLBACK(interface, report_id,
-						    duration);
-		return res;
-	}
+void hid_set_report(void)
+{
+#ifdef HID_DEBUG
+	printf("Set_Report Request\n");
 #endif
+}
 
-#ifdef HID_GET_PROTOCOL_CALLBACK
-	if (setup->bRequest == GET_PROTOCOL &&
-	    setup->REQUEST.bmRequestType == 0xa1) {
-		int8_t res = HID_GET_PROTOCOL_CALLBACK(interface);
-		if (res < 0)
-			return -1;
-
-		usb_send_data_stage((char *)&res, 1);
-		return 0;
-	}
+void hid_get_idle(void)
+{
+#ifdef HID_DEBUG
+	printf("Get_Idle Request\n");
 #endif
+}
 
-#ifdef HID_SET_PROTOCOL_CALLBACK
-	if (setup->bRequest == SET_PROTOCOL &&
-	    setup->REQUEST.bmRequestType == 0x21) {
-		int8_t res = HID_SET_PROTOCOL_CALLBACK(interface,
-						       setup->wValue);
-
-		return res;
-	}
+void hid_set_idle(void)
+{
+#ifdef HID_DEBUG
+	printf("Set_Idle Request\n");
 #endif
-
-	return -1;
+	usb_send_zero_length_packet();
 }

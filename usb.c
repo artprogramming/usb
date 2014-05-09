@@ -137,6 +137,7 @@ void usb_setup_request(void)
 		usb_standard_request(setup);
 		break;
 	case TYPE_CLASS:
+		usb_class_request(setup);
 		break;
 	case TYPE_VENDOR:
 		break;
@@ -175,6 +176,11 @@ void usb_standard_request(struct setup_packet *setup)
 	default:
 		break;
 	}
+}
+
+void usb_class_request(struct setup_packet *setup)
+{
+	hid_class_request(setup);
 }
 
 void usb_get_descriptor(struct setup_packet *setup)
