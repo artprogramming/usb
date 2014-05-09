@@ -40,7 +40,7 @@ void hid_class_request(struct setup_packet *setup)
 void hid_get_protocol(void)
 {
 #ifdef HID_DEBUG
-	printf("Get_Protocol Request\n");
+	printf("Get protocol request\n");
 #endif
 	d12_write_buffer(D12_EPINDEX_0_IN, &this_protocol, 1);
 }
@@ -48,7 +48,7 @@ void hid_get_protocol(void)
 void hid_set_protocol(uint8_t protocol)
 {
 #ifdef HID_DEBUG
-	printf("Set_Protocol Request\n");
+	printf("Set protocol request\n");
 #endif
 	this_protocol = protocol;
 	
@@ -58,28 +58,28 @@ void hid_set_protocol(uint8_t protocol)
 void hid_get_report(void)
 {
 #ifdef HID_DEBUG
-	printf("Get_Report Request\n");
+	printf("Get report request\n");
 #endif
 }
 
 void hid_set_report(void)
 {
 #ifdef HID_DEBUG
-	printf("Set_Report Request\n");
+	printf("Set report request\n");
 #endif
 }
 
 void hid_get_idle(void)
 {
 #ifdef HID_DEBUG
-	printf("Get_Idle Request\n");
+	printf("Get idle request\n");
 #endif
 }
 
 void hid_set_idle(void)
 {
 #ifdef HID_DEBUG
-	printf("Set_Idle Request\n");
+	printf("Set idle request\n");
 #endif
 	usb_send_zero_length_packet();
 }
