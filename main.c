@@ -6,7 +6,7 @@ extern void usb_irq(void) __interrupt 0;
 extern int  usb_init(void);
 extern void serial_init(void);
 
-extern int reportkey(uint8_t key);
+extern int  reportkey(uint8_t key);
 
 void main(void)
 {
