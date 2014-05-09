@@ -9,8 +9,6 @@
 
 #define HID_DEBUG	1
 
-static uint8_t this_protocol = 0;
-
 void hid_class_request(struct setup_packet *setup)
 {
 	switch (setup->bRequest) {
@@ -37,6 +35,7 @@ void hid_class_request(struct setup_packet *setup)
 	}
 }
 
+static uint8_t this_protocol = 0;
 void hid_get_protocol(void)
 {
 #ifdef HID_DEBUG
