@@ -11,6 +11,8 @@
 #include "descriptor.h"
 
 
+#define USB_DEBUG	1
+
 void usb_irq(void) __interrupt 0
 {
 	uint16_t status = d12_read_interrupt_register();
@@ -128,9 +130,9 @@ void usb_setup_request(void)
 
 	d12_read_setup_packet(buf, 8);
 	
-	printf("bmRequestType %x bRequest %x wValue %x wIndex %x wLength %x\n",
+	/*printf("bmRequestType %x bRequest %x wValue %x wIndex %x wLength %x\n",
 		setup->REQUEST.bmRequestType, setup->bRequest,
-		setup->wValue, setup->wIndex, setup->wLength);
+		setup->wValue, setup->wIndex, setup->wLength);*/
 
 	switch (setup->REQUEST.type) {
 	case TYPE_STANDARD:
@@ -183,6 +185,12 @@ void usb_class_request(struct setup_packet *setup)
 	hid_class_request(setup);
 }
 
+static const char *desc_string[] = {
+	"device descriptor",
+	"configuration descriptor",
+	"string descriptor",
+	"interface descriptor",
+	"endpoint descriptor",};
 void usb_get_descriptor(struct setup_packet *setup)
 {
 	uint8_t type, index;
@@ -191,6 +199,10 @@ void usb_get_descriptor(struct setup_packet *setup)
 
 	type = setup->wValue >> 8;
 	index = (uint8_t)setup->wValue & 0x00ff;
+
+#ifdef USB_DEBUG
+	printf("USB get descriptor type: %d index: %d\n", type, index);
+#endif
 
 	switch (type) {
 	case DESC_DEVICE:
@@ -216,6 +228,9 @@ void usb_get_descriptor(struct setup_packet *setup)
 
 void usb_set_address(uint8_t addr)
 {
+#ifdef USB_DEBUG
+	printf("USB set address\n");
+#endif
 	usb_set_device_state(USB_STATE_ADDRESS);
 
 	d12_set_address_enable(addr);
@@ -225,6 +240,9 @@ void usb_set_address(uint8_t addr)
 static uint8_t g_current_configuration = 0;
 void usb_set_configuration(uint8_t config)
 {
+#ifdef USB_DEBUG
+	printf("USB set configuration\n");
+#endif
 	usb_set_device_state(USB_STATE_CONFIGURED);
 
 	g_current_configuration = config;
@@ -234,6 +252,9 @@ void usb_set_configuration(uint8_t config)
 
 void usb_get_configuration(void)
 {
+#ifdef USB_DEBUG
+	printf("USB get configuration\n");
+#endif
 	d12_write_buffer(D12_EPINDEX_0_IN, &g_current_configuration, 1);
 }
 
