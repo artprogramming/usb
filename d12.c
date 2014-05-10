@@ -3,8 +3,6 @@
 
 #include "d12.h"
 
-#define DATA_PORT	P0
-
 #define IT_N		P3_2
 #define RD_N		P3_7
 #define WR_N		P3_6
@@ -12,8 +10,8 @@
 
 #define sethigh(pin)	(pin = 1)
 #define setlow(pin)	(pin = 0)
-#define setdata(val)	(DATA_PORT = val)
-#define getdata()	(DATA_PORT)
+#define setdata(val)	(P0 = val)
+#define getdata()	(P0)
 
 #define ENABLE		1
 #define DISABLE		0
