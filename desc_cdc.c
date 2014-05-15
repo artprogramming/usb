@@ -1,16 +1,16 @@
 /* Copy from book of Serial Port Complete at Table 16-3: Example descriptor for a full-speed CDC device */
 //#include <stdint.h>
 
-//////////////////////////////////////////////////////////////////////////
-//				        Device		                //
-//				     Configuration			//
-//		Interface(Communication)	Interface(Data)	        //
-//		Header Functional		Endpoint(Bulk IN)       //
-//	  Abstract Control Model Functional	Endpoint(Bulk OUT)      //
-//		Union Functional					//
-//	  Call Management Functional					//
-//		Endpoint(Interrupt IN)					//
-//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+//						Device		                //
+//					    Configuration			//
+//		Interface(Communication)		Interface(Data)	        //
+//		Header Functional			Endpoint(Bulk IN)       //
+//	 	Abstract Control Model Functional	Endpoint(Bulk OUT)      //
+//		Union Functional						//
+//	 	Call Management Functional					//
+//		Endpoint(Interrupt IN)						//
+//////////////////////////////////////////////////////////////////////////////////
 
 unsigned char device_descriptor[] = {
 	0x12,		/* bLength */
