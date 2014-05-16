@@ -38,6 +38,7 @@ struct hid_optional_descriptor {
 	uint16_t	wDescriptorLength;
 };
 
+/* HID class request API */
 extern void hid_class_request(struct setup_packet *setup);
 extern void hid_get_report(void);
 extern void hid_set_report(void);
