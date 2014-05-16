@@ -8,7 +8,6 @@
 #include "usb.h"
 #include "hid.h"
 #include "types.h"
-#include "descriptor.h"
 
 
 #define USB_DEBUG	1
@@ -210,7 +209,7 @@ void usb_get_descriptor(struct setup_packet *setup)
 		usb_send_descriptor(desc, MIN(len, (uint8_t)setup->wLength));
 		break;
 	case DESC_CONFIGURATION:
-		len = usb_get_configuration_descriptor(&desc);
+		len = usb_get_config_descriptor(&desc);
 		usb_send_descriptor(desc, MIN(len, (uint8_t)setup->wLength));
 		break;
 	case DESC_STRING:

@@ -109,7 +109,7 @@ int16_t usb_get_device_descriptor(const void **p)
 	return sizeof(device_descriptor);
 }
 
-int16_t usb_get_configuration_descriptor(const void **p)
+int16_t usb_get_config_descriptor(const void **p)
 {
 	*p = &configuration_descriptor;
 

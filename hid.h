@@ -46,4 +46,10 @@ extern void hid_set_idle(void);
 extern void hid_get_protocol(void);
 extern void hid_set_protocol(uint8_t protocol);
 
+/* Descriptor API */
+extern int16_t usb_get_device_descriptor(const void **p);
+extern int16_t usb_get_config_descriptor(const void **p);
+extern int16_t usb_get_hid_descriptor(const void **p);
+extern int16_t usb_get_report_descriptor(const void **p);
+
 #endif /* __USB_HID_H */
