@@ -1,7 +1,7 @@
 /* Copy from book of Serial Port Complete at Table 16-3: Example descriptor for a full-speed CDC device */
 #include <stdint.h>
 
-#include "types.h
+#include "types.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 //						Device		                //
