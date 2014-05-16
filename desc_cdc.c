@@ -14,7 +14,7 @@
 //		Endpoint(Interrupt IN)						//
 //////////////////////////////////////////////////////////////////////////////////
 
-__code static unsigned char device_descriptor[] = {
+__code static uint8_t device_descriptor[] = {
 	0x12,		/* bLength */
 	0x01,		/* bDescriptorType */
 	0x00, 0x02,	/* bcdUSB */
@@ -31,7 +31,7 @@ __code static unsigned char device_descriptor[] = {
 	0x01,		/* bNumConfigurations */
 }; 
 
-__code static unsigned char config_descriptor[] = {
+__code static uint8_t config_descriptor[] = {
 	/* Configuration Descriptor */
 	0x09,		/* bLength */
 	0x02,		/* bDescriptorType */
@@ -115,13 +115,13 @@ __code static unsigned char config_descriptor[] = {
 	0x00,		/* bInterval */
 };
 
-__code static unsigned char language_id[] = {
+__code static uint8_t language_id[] = {
 	0x04,		/* bLength */
 	0x03,		/* bDescriptorType */
 	0x09, 0x04,	/* wLANGID */
 };
 
-__code static unsigned char manufacturer_string[] = {
+__code static uint8_t manufacturer_string[] = {
 	0x2C,		/* bLength */
 	0x03,		/* bDescriptorType */
 	'L', 0x00,
@@ -147,7 +147,7 @@ __code static unsigned char manufacturer_string[] = {
 	'C', 0x00,
 };
 
-__code static unsigned char product_string[]= {
+__code static uint8_t product_string[]= {
 	0x20,		/* bLength */
 	0x03,		/* bDescriptorType */
 	'C', 0x00,
@@ -167,7 +167,7 @@ __code static unsigned char product_string[]= {
 	'e', 0x00,
 };
 
-__code static unsigned char serial_number_string[] = {
+__code static uint8_t serial_number_string[] = {
 	0x1A,		/* bLength */
 	0x03,		/* bDescriptorType */
 	'1', 0x00,
