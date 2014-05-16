@@ -1,5 +1,7 @@
 /* Copy from book of Serial Port Complete at Table 16-3: Example descriptor for a full-speed CDC device */
-//#include <stdint.h>
+#include <stdint.h>
+
+#include "types.h
 
 //////////////////////////////////////////////////////////////////////////////////
 //						Device		                //
@@ -12,7 +14,7 @@
 //		Endpoint(Interrupt IN)						//
 //////////////////////////////////////////////////////////////////////////////////
 
-unsigned char device_descriptor[] = {
+__code static unsigned char device_descriptor[] = {
 	0x12,		/* bLength */
 	0x01,		/* bDescriptorType */
 	0x00, 0x02,	/* bcdUSB */
@@ -29,7 +31,7 @@ unsigned char device_descriptor[] = {
 	0x01,		/* bNumConfigurations */
 }; 
 
-unsigned char config_descriptor[] = {
+__code static unsigned char config_descriptor[] = {
 	/* Configuration Descriptor */
 	0x09,		/* bLength */
 	0x02,		/* bDescriptorType */
@@ -113,13 +115,13 @@ unsigned char config_descriptor[] = {
 	0x00,		/* bInterval */
 };
 
-unsigned char language_id[] = {
+__code static unsigned char language_id[] = {
 	0x04,		/* bLength */
 	0x03,		/* bDescriptorType */
 	0x09, 0x04,	/* wLANGID */
 };
 
-unsigned char manufacturer_string[] = {
+__code static unsigned char manufacturer_string[] = {
 	0x2C,		/* bLength */
 	0x03,		/* bDescriptorType */
 	'L', 0x00,
@@ -145,7 +147,7 @@ unsigned char manufacturer_string[] = {
 	'C', 0x00,
 };
 
-unsigned char product_string[]= {
+__code static unsigned char product_string[]= {
 	0x20,		/* bLength */
 	0x03,		/* bDescriptorType */
 	'C', 0x00,
@@ -165,7 +167,7 @@ unsigned char product_string[]= {
 	'e', 0x00,
 };
 
-unsigned char serial_number_string[] = {
+__code static unsigned char serial_number_string[] = {
 	0x1A,		/* bLength */
 	0x03,		/* bDescriptorType */
 	'1', 0x00,
@@ -181,3 +183,38 @@ unsigned char serial_number_string[] = {
 	'B', 0x00,
 	'C', 0x00,
 };
+
+int16_t usb_get_device_descriptor(const void **p)
+{
+	*p = &device_descriptor;
+	
+	return sizeof(device_descriptor);
+}
+
+int16_t usb_get_config_descriptor(const void **p)
+{
+	*p = &config_descriptor;
+	
+	return sizeof(config_descriptor);
+}
+
+int16_t usb_get_string_descriptor(const void **p, uint8_t index)
+{
+	switch (index) {
+	case 0:
+		*p = &language_id;
+		return sizeof(language_id);
+	case 1:
+		*p = &manufacturer_string;
+		return sizeof(manufacturer_string);
+	case 2:
+		*p = &product_string;
+		return sizeof(product_string);
+	case 3:
+		*p = &serial_number_string;
+		return sizeof(serial_number_string);
+	default:
+		*p = NULL;
+		return 0;
+	}
+}
