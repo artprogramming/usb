@@ -1,39 +1,44 @@
 CC	= sdcc
 
-OBJS	= main.rel led.rel serial.rel putchar.rel puts.rel printf.rel \
-	  d12.rel delay.rel usb.rel desc_hid.rel key.rel reportkey.rel \
-	  hid.rel
+SRCS	= hw/serial.c hw/led.c hw/key.c hw/d12.c \
+	  core/delay.c core/putchar.c core/puts.c core/printf.c core/usb.c \
+	  app/hid/desc_hid.c app/hid/hid.c app/hid/main.c app/hid/reportkey.c
 
-all:usb.bin
+OBJS	= $(SRCS:%.c=%.rel)
 
-usb.bin:usb.hex
-	objcopy -I ihex -O binary usb.hex usb.bin
+CFLAGS	= -I./include -I./include/usb -I./hw -I./core -I./app/hid
 
-usb.hex:usb.ihx
-	packihx usb.ihx > usb.hex
-
+all:usb.ihx
 usb.ihx:$(OBJS)
-	$(CC) -o usb.ihx $(OBJS)
+	$(CC) -o $@ $(OBJS)
 
 %.rel:%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -o $@ -c $<
+
 
 .PHONY:clean
 clean:
-	-rm -f *.asm *.lst *.rel *.rst *.sym
-	-rm -f *.bin *.hex *.ihx *.lk *.map *.mem
+	-rm -f $(addsuffix .rel, $(basename $(OBJS)))
+	-rm -f $(addsuffix .asm, $(basename $(OBJS)))
+	-rm -f $(addsuffix .lst, $(basename $(OBJS)))
+	-rm -f $(addsuffix .rst, $(basename $(OBJS)))
+	-rm -f $(addsuffix .sym, $(basename $(OBJS)))
+	-rm -f usb.ihx usb.map usb.lk usb.mem	
+
 
 # Dependencies
-main.rel:main.c printf.h
-led.rel:led.c led.h
-serial:serial.c configs.h
-putchar.rel:putchar.c
-puts.rel:puts.c
-printf.rel:printf.c
-d12.rel:d12.c d12.h
-delay.rel:delay.c
-usb.rel:usb.c printf.h delay.h ch9.h usb.h d12.h hid.h types.h
-desc_hid.rel:desc_hid.c ch9.h hid.h
-key.rel:key.c delay.h
-reportkey.rel:reportkey.c d12.h key.h keycodes.h
-hid.rel:hid.c hid.h d12.h usb.h ch9.h 
+hw/serial.rel:hw/serial.c include/configs.h
+hw/led.rel:hw/led.c hw/led.h
+hw/key.rel:hw/key.c core/delay.h
+hw/d12.rel:hw/d12.c hw/d12.h
+core/delay.rel:core/delay.c
+core/putchar.rel:core/putchar.c
+core/puts.rel:core/puts.c
+core/printf.rel:core/printf.c
+core/usb.rel:core/usb.c hw/d12.h include/printf.h core/delay.h \
+	include/usb/ch9.h core/usb.h app/hid/hid.h include/types.h
+app/hid/desc_hid.rel:app/hid/desc_hid.c include/usb/ch9.h app/hid/hid.h
+app/hid/hid.rel:app/hid/hid.c include/usb/ch9.h app/hid/hid.h \
+	hw/d12.h core/usb.h include/printf.h
+app/hid/main.rel:app/hid/main.c include/printf.h hw/key.h core/delay.h
+app/hid/reportkey.rel:app/hid/reportkey.c hw/d12.h hw/key.h include/usb/keycodes.h
