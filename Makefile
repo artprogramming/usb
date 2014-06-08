@@ -2,13 +2,19 @@ CC	= sdcc
 
 SRCS	= hw/serial.c hw/led.c hw/key.c hw/d12.c \
 	  core/delay.c core/putchar.c core/puts.c core/printf.c core/usb.c \
-	  app/hid/desc_hid.c app/hid/hid.c app/hid/main.c app/hid/reportkey.c
+	  app/hid/desc.c app/hid/hid.c app/hid/main.c app/hid/reportkey.c
 
 OBJS	= $(SRCS:%.c=%.rel)
 
 CFLAGS	= -I./include -I./include/usb -I./hw -I./core -I./app/hid
 
-all:usb.ihx
+all:usb.bin
+usb.bin:usb.hex
+	objcopy -I ihex -O binary usb.hex usb.bin
+
+usb.hex:usb.ihx
+	packihx usb.ihx > usb.hex
+
 usb.ihx:$(OBJS)
 	$(CC) -o $@ $(OBJS)
 
@@ -23,7 +29,7 @@ clean:
 	-rm -f $(addsuffix .lst, $(basename $(OBJS)))
 	-rm -f $(addsuffix .rst, $(basename $(OBJS)))
 	-rm -f $(addsuffix .sym, $(basename $(OBJS)))
-	-rm -f usb.ihx usb.map usb.lk usb.mem	
+	-rm -f usb.bin usb.hex usb.ihx usb.map usb.lk usb.mem	
 
 
 # Dependencies
@@ -37,7 +43,7 @@ core/puts.rel:core/puts.c
 core/printf.rel:core/printf.c
 core/usb.rel:core/usb.c hw/d12.h include/printf.h core/delay.h \
 	include/usb/ch9.h core/usb.h app/hid/hid.h include/types.h
-app/hid/desc_hid.rel:app/hid/desc_hid.c include/usb/ch9.h app/hid/hid.h
+app/hid/desc.rel:app/hid/desc.c include/usb/ch9.h app/hid/hid.h
 app/hid/hid.rel:app/hid/hid.c include/usb/ch9.h app/hid/hid.h \
 	hw/d12.h core/usb.h include/printf.h
 app/hid/main.rel:app/hid/main.c include/printf.h hw/key.h core/delay.h
