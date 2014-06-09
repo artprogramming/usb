@@ -6,16 +6,38 @@
 #include "delay.h"
 #include "ch9.h"
 #include "usb.h"
-#include "hid.h"
+//#include "hid.h"
 #include "types.h"
 
-
+extern int16_t usb_get_device_descriptor(const void **p);
+extern int16_t usb_get_config_descriptor(const void **p);
 #define USB_DEBUG	1
 
+/* for class driver */
+struct class_driver {
+	void (*class_request_handler)(struct setup_packet *setup);
+};
+
+struct class_driver class_driver;
+struct class_driver *get_class_driver(void)
+{
+	return &class_driver;
+}
+
+void usb_register_class_driver(void (*class_request_handler)(struct setup_packet *setup))
+{
+	struct class_driver *drv;
+
+	drv = get_class_driver();
+	drv->class_request_handler = class_request_handler;
+}
+
+uint8_t outbuf[8];
 void usb_irq(void) __interrupt 0
 {
 	uint16_t status = d12_read_interrupt_register();
 
+	//printf("int status %x\n", status);
 #if 0
 	switch (status) {
 	case D12_INT_EP0_OUT:
@@ -54,17 +76,41 @@ void usb_irq(void) __interrupt 0
 		d12_read_last_transaction_status(D12_EPINDEX_1_OUT);
 	} else if (status & D12_INT_EP1_IN) {
 		d12_read_last_transaction_status(D12_EPINDEX_1_IN);
-	} else {
+	} else if (status & D12_INT_EP2_OUT) {
+		d12_read_last_transaction_status(D12_EPINDEX_2_OUT);
+		d12_read_buffer(D12_EPINDEX_2_OUT, outbuf, 8);
+		printf("recv %x %x %x %x %x %x %x %x", outbuf[0], outbuf[1],
+			outbuf[2], outbuf[3], outbuf[4], outbuf[5],
+			outbuf[6], outbuf[7]);
+		d12_clear_buffer();
+	} else if (status & D12_INT_EP2_IN) {
+		d12_read_last_transaction_status(D12_EPINDEX_2_IN);
+	}else {
 		printf("Unkown interrupt\n");
 	}
 }
 
+uint8_t flag = 0;
 void handle_ep0_out(void)
 {
+	int i = 0;
 	uint8_t status = d12_read_last_transaction_status(D12_EPINDEX_0_OUT);
 
+	//printf("status %x\n", status);
 	if (status & D12_LAST_TRANS_STATUS_SETUP_PACKET) {
 		usb_setup_request();
+	} else {
+		if (flag == 1) {
+			d12_read_buffer(D12_EPINDEX_0_OUT, outbuf, 8);
+			/*printf("aaa %x %x %x %x %x %x %x\n", outbuf[0], outbuf[1], outbuf[2],
+				outbuf[3], outbuf[4], outbuf[5], outbuf[6]);*/
+			d12_clear_buffer();
+			usb_send_zero_length_packet();
+			flag = 0;
+			/*outbuf[0] = outbuf[1] = outbuf[2] = outbuf[3] = outbuf[4] = outbuf[5] = oubuf[6] = outbuf[7] = 0x00;*/
+			for (i = 0; i < 8; i++)
+				outbuf[i] = 0x00;
+		}
 	}
 }
 
@@ -181,7 +227,11 @@ void usb_standard_request(struct setup_packet *setup)
 
 void usb_class_request(struct setup_packet *setup)
 {
-	hid_class_request(setup);
+	//hid_class_request(setup);
+	struct class_driver *drv;
+
+	drv = get_class_driver();
+	drv->class_request_handler(setup);
 }
 
 static const char *desc_string[] = {
@@ -205,21 +255,22 @@ void usb_get_descriptor(struct setup_packet *setup)
 
 	switch (type) {
 	case DESC_DEVICE:
+		printf("get device descriptor\n");
 		len = usb_get_device_descriptor(&desc);
 		usb_send_descriptor(desc, MIN(len, (uint8_t)setup->wLength));
 		break;
 	case DESC_CONFIGURATION:
 		len = usb_get_config_descriptor(&desc);
-		usb_send_descriptor(desc, MIN(len, (uint8_t)setup->wLength));
+		usb_send_descriptor(desc, MIN(len, (uint16_t)setup->wLength));
 		break;
 	case DESC_STRING:
 		break;
-	case DESC_HID:
-		break;
-	case DESC_REPORT:
-		len = usb_get_report_descriptor(&desc);
-		usb_send_descriptor(desc, MIN(len, (uint8_t)setup->wLength));
-		break;
+	//case DESC_HID:
+	//	break;
+	//case DESC_REPORT:
+		//len = usb_get_report_descriptor(&desc);
+		//usb_send_descriptor(desc, MIN(len, (uint8_t)setup->wLength));
+	//	break;
 	default:
 		break;
 	}
@@ -228,9 +279,9 @@ void usb_get_descriptor(struct setup_packet *setup)
 void usb_set_address(uint8_t addr)
 {
 #ifdef USB_DEBUG
-	printf("USB set address\n");
+	printf("USB set address %d\n", addr);
 #endif
-	usb_set_device_state(USB_STATE_ADDRESS);
+	//usb_set_device_state(USB_STATE_ADDRESS);
 
 	d12_set_address_enable(addr);
 	usb_send_zero_length_packet();

@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "d12.h"
+#include "printf.h"
 
 #define IT_N		P3_2
 #define RD_N		P3_7
@@ -154,8 +155,11 @@ void d12_write_buffer(uint8_t ep, uint8_t *buf, uint8_t size)
 	d12_write_byte(size);
 
 	for (i = 0; i < size; i++) {
+		printf("%x ", *buf);
 		d12_write_byte(*buf++);
+		//printf();
 	}
+	printf("\n");
 
 	d12_validate_buffer();
 }

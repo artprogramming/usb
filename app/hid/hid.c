@@ -82,3 +82,8 @@ void hid_set_idle(void)
 #endif
 	usb_send_zero_length_packet();
 }
+
+void hid_init(void)
+{
+	usb_register_class_driver(hid_class_request);
+}

@@ -21,13 +21,13 @@ __code static uint8_t device_descriptor[] = {
 	0x02,		/* bDeviceClass */
 	0x00,		/* bDeviceSubClass */
 	0x00,		/* bDeviceProtocol */
-	0x40,		/* bMaxPacketSize0 */
+	0x10,		/* bMaxPacketSize0 */
 	0x25, 0x09,	/* idVendor */
 	0x50, 0x90,	/* idProduct */
 	0x00, 0x01,	/* bcdDevice */
-	0x01,		/* iManufacturer */
-	0x02,		/* iProduct */
-	0x03,		/* iSerialNumber */
+	0x00,//0x01,		/* iManufacturer */
+	0x00,//0x02,		/* iProduct */
+	0x00,//0x03,		/* iSerialNumber */
 	0x01,		/* bNumConfigurations */
 }; 
 
@@ -82,7 +82,7 @@ __code static uint8_t config_descriptor[] = {
 	/* Endpoint Descriptor */
 	0x07,		/* bLength */
 	0x05,		/* bDescriptorType */
-	0x82,		/* bEndpointAddress */
+	0x81,		/* bEndpointAddress */
 	0x03,		/* bmAttributes */
 	0x08, 0x00,	/* wMaxPacketSize */
 	0x02,		/* bInterval */
@@ -101,7 +101,7 @@ __code static uint8_t config_descriptor[] = {
 	/* Endpoint Descriptor */
 	0x07,		/* bLength */
 	0x05,		/* bDescriptorType */
-	0x81,		/* bEndpointAddress */
+	0x82,		/* bEndpointAddress */
 	0x02,		/* bmAttributes */
 	0x40, 0x00,	/* wMaxPacketSize */
 	0x00,		/* bInterval */
@@ -109,7 +109,7 @@ __code static uint8_t config_descriptor[] = {
 	/* Endpoint Descriptor */
 	0x07,		/* bLength */
 	0x05,		/* bDescriptorType */
-	0x01,		/* bEndpointAddress */
+	0x02,		/* bEndpointAddress */
 	0x02,		/* bmAttributes */
 	0x40, 0x00,	/* wMaxPacketSize */
 	0x00,		/* bInterval */

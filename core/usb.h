@@ -20,4 +20,7 @@ extern void usb_get_configuration(void);
 extern void usb_set_device_state(enum usb_device_state new_state);
 extern enum usb_device_state usb_get_device_state(void);
 
+/* for class driver */
+void usb_register_class_driver(void (*class_request_handler)(struct setup_packet *setup));
+
 #endif /* __USB_H */

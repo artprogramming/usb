@@ -1,12 +1,25 @@
 CC	= sdcc
 
+APP	= APP_CDC
+
 SRCS	= hw/serial.c hw/led.c hw/key.c hw/d12.c \
 	  core/delay.c core/putchar.c core/puts.c core/printf.c core/usb.c \
-	  app/hid/desc.c app/hid/hid.c app/hid/main.c app/hid/reportkey.c
+
+ifeq ($(APP), APP_HID)
+SRCS	+= app/hid/desc.c app/hid/hid.c app/hid/main.c app/hid/reportkey.c
+else ifeq ($(APP), APP_CDC)
+SRCS	+= app/cdc/desc.c app/cdc/cdc.c app/cdc/main.c
+endif
 
 OBJS	= $(SRCS:%.c=%.rel)
 
-CFLAGS	= -I./include -I./include/usb -I./hw -I./core -I./app/hid
+CFLAGS	= -I./include -I./include/usb -I./hw -I./core
+
+ifeq ($(APP), APP_HID)
+CFLAGS	+= -I./app/hid
+else ifeq ($(APP), APP_CDC)
+CFLAGS	+= -I./app/cdc
+endif
 
 all:usb.bin
 usb.bin:usb.hex
@@ -43,8 +56,15 @@ core/puts.rel:core/puts.c
 core/printf.rel:core/printf.c
 core/usb.rel:core/usb.c hw/d12.h include/printf.h core/delay.h \
 	include/usb/ch9.h core/usb.h app/hid/hid.h include/types.h
+ifeq ($(APP), APP_HID)
 app/hid/desc.rel:app/hid/desc.c include/usb/ch9.h app/hid/hid.h
 app/hid/hid.rel:app/hid/hid.c include/usb/ch9.h app/hid/hid.h \
 	hw/d12.h core/usb.h include/printf.h
 app/hid/main.rel:app/hid/main.c include/printf.h hw/key.h core/delay.h
 app/hid/reportkey.rel:app/hid/reportkey.c hw/d12.h hw/key.h include/usb/keycodes.h
+else ifeq ($(APP), APP_CDC)
+app/cdc/cdc.rel:app/cdc/cdc.c include/printf.h include/types.h include/usb/ch9.h \
+	hw/d12.h app/cdc/cdc.h core/usb.h
+app/cdc/desc.rel:app/cdc/desc.c include/types.h
+app/cdc/main.rel:app/cdc/main.c include/printf.h
+endif
