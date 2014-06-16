@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "types.h"
+#include "ch9.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 //						Device		                //
@@ -184,21 +185,21 @@ __code static uint8_t serial_number_string[] = {
 	'C', 0x00,
 };
 
-int16_t usb_get_device_descriptor(const void **p)
+int16_t get_device_descriptor(const void **p)
 {
 	*p = &device_descriptor;
 	
 	return sizeof(device_descriptor);
 }
 
-int16_t usb_get_config_descriptor(const void **p)
+int16_t get_config_descriptor(const void **p)
 {
 	*p = &config_descriptor;
 	
 	return sizeof(config_descriptor);
 }
 
-int16_t usb_get_string_descriptor(const void **p, uint8_t index)
+int16_t get_string_descriptor(uint8_t index, const void **p)
 {
 	switch (index) {
 	case 0:
@@ -217,4 +218,26 @@ int16_t usb_get_string_descriptor(const void **p, uint8_t index)
 		*p = NULL;
 		return 0;
 	}
+}
+
+int16_t get_descriptor(uint8_t type, uint8_t index, const void **p)
+{
+	int16_t size = 0;
+
+	switch (type) {
+	case DESC_DEVICE:
+		size = get_device_descriptor(p);
+		break;
+	case DESC_CONFIGURATION:
+		size = get_config_descriptor(p);
+		break;
+	case DESC_STRING:
+		size = get_string_descriptor(index, p);
+		break;
+	default:
+		*p = NULL;
+		break;
+	}
+
+	return size;
 }

@@ -38,19 +38,4 @@ struct hid_optional_descriptor {
 	uint16_t	wDescriptorLength;
 };
 
-/* HID class request API */
-extern void hid_class_request(struct setup_packet *setup);
-extern void hid_get_report(void);
-extern void hid_set_report(void);
-extern void hid_get_idle(void);
-extern void hid_set_idle(void);
-extern void hid_get_protocol(void);
-extern void hid_set_protocol(uint8_t protocol);
-
-/* Descriptor API */
-extern int16_t usb_get_device_descriptor(const void **p);
-extern int16_t usb_get_config_descriptor(const void **p);
-extern int16_t usb_get_hid_descriptor(const void **p);
-extern int16_t usb_get_report_descriptor(const void **p);
-
 #endif /* __USB_HID_H */

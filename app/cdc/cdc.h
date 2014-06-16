@@ -4,12 +4,12 @@
 #include <stdint.h>
 
 enum {
-	CDC_SET_LINE_CODING = 0x20,
-	CDC_GET_LINE_CODING = 0x21,
-	CDC_SET_CONTROL_LINE_STATE = 0x22,
+	SET_LINE_CODING = 0x20,
+	GET_LINE_CODING = 0x21,
+	SET_CONTROL_LINE_STATE = 0x22,
 };
 
-struct cdc_line_coding {
+struct line_coding {
 	/* dwDTERate:	Baudrates, 9600 or 115200 */
 	uint32_t dwDTERate;
 
@@ -30,7 +30,5 @@ struct cdc_line_coding {
 	/* bDataBits: 5, 6, 7, 8 or 16 */
 	uint8_t bDataBits;
 };
-
-extern void cdc_class_request(struct setup_packet *setup);
 
 #endif /* __USB_CDC_H */

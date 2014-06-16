@@ -1,76 +1,56 @@
 #include <stdint.h>
 
-#include "printf.h"
 #include "types.h"
 #include "ch9.h"
 #include "d12.h"
-#include "cdc.h"
 #include "usb.h"
+#include "cdc.h"
 
-//static struct cdc_line_coding this_line_coding = {115200, 0, 0, 8};
 static uint8_t this_device_line_coding[] = {0x80, 0x25, 0x00, 0x00, 0x00, 0x00, 0x08};
 
-static void cdc_set_line_coding(void);
-static void cdc_get_line_coding(struct setup_packet *setup);
-static void cdc_set_control_line_state(void);
+extern int16_t get_descriptor(uint8_t type, uint8_t index, const void **p);
 
-extern uint8_t flag;
-void cdc_class_request(struct setup_packet *setup)
+static void set_line_coding(void);
+static void get_line_coding(uint8_t bytes_send);
+static void set_control_line_state(void);
+
+static void cdc_class_request(struct setup_packet *setup)
 {
 	switch (setup->bRequest) {
-	case CDC_SET_LINE_CODING:
-		cdc_set_line_coding();
+	case SET_LINE_CODING:
+		set_line_coding();
 		break;
-	case CDC_GET_LINE_CODING:
-		cdc_get_line_coding(setup);
+	case GET_LINE_CODING:
+		get_line_coding(MIN(sizeof(this_device_line_coding), setup->wLength));
 		break;
-	case CDC_SET_CONTROL_LINE_STATE:
-		cdc_set_control_line_state();
+	case SET_CONTROL_LINE_STATE:
+		set_control_line_state();
 		break;
 	default:
 		break;
 	}
 }
 
-//uint8_t buf[7];
-static void cdc_set_line_coding(void)
+static void set_line_coding(void)
 {
-	/*int i;
-	printf("set line coding\n");
-	for (i = 0; i < 7; i++) {
-		this_device_line_coding[i] = 0x00;
-	}
-	d12_read_buffer(D12_EPINDEX_0_IN, (uint8_t *)&this_device_line_coding, 7);
-	
-	for (i = 0; i < 7; i++) {
-		printf("%x ", this_device_line_coding[i]);
-	}
-	printf("\n");
-	usb_send_zero_length_packet();*/
-	flag = 1;
 }
 
-static void cdc_get_line_coding(struct setup_packet *setup)
+static void get_line_coding(uint8_t bytes_send)
 {
-	int bytes_send, i;
-
-	printf("get line coding\n");
-	bytes_send = MIN(sizeof(struct cdc_line_coding), setup->wLength);
-	for (i = 0; i < 7; i++) {
-		printf("sss %x ", this_device_line_coding[i]);
-	}
-	printf("\n");
-	d12_write_buffer(D12_EPINDEX_0_IN, (uint8_t *)&this_device_line_coding, 7);
-	printf("for for\n");
+	d12_write_buffer(D12_EPINDEX_0_IN, (uint8_t *)&this_device_line_coding, bytes_send);
 }
 
-static void cdc_set_control_line_state(void)
+static void set_control_line_state(void)
 {
-	printf("set control line state\n");
 	usb_send_zero_length_packet();
 }
 
+struct class_driver cdc_driver = {
+	.get_descriptor = get_descriptor,
+	.req_handler = cdc_class_request,
+};
+
 void cdc_init(void)
 {
-	usb_register_class_driver(cdc_class_request);
+	usb_register_class_driver(&cdc_driver);
 }
