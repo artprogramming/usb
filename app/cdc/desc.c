@@ -26,9 +26,9 @@ __code static uint8_t device_descriptor[] = {
 	0x25, 0x09,	/* idVendor */
 	0x50, 0x90,	/* idProduct */
 	0x00, 0x01,	/* bcdDevice */
-	0x00,//0x01,		/* iManufacturer */
-	0x00,//0x02,		/* iProduct */
-	0x00,//0x03,		/* iSerialNumber */
+	0x01,		/* iManufacturer */
+	0x02,		/* iProduct */
+	0x03,		/* iSerialNumber */
 	0x01,		/* bNumConfigurations */
 }; 
 
