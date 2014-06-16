@@ -7,8 +7,6 @@
 
 static uint8_t this_device_protocol_code = 0;
 
-extern int16_t get_descriptor(uint8_t type, uint8_t index, const void **p);
-
 static void get_protocol(void);
 static void set_protocol(uint8_t protocol);
 static void get_report(void);
@@ -70,12 +68,7 @@ static void set_idle(void)
 	usb_send_zero_length_packet();
 }
 
-struct class_driver hid_driver = {
-	.get_descriptor = get_descriptor,
-	.req_handler = hid_class_request,
-};
-
 void hid_init(void)
 {
-	usb_register_class_driver(&hid_driver);
+	usb_register_class_driver(hid_class_request);
 }

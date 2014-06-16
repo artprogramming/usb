@@ -1,6 +1,6 @@
 CC	= sdcc
 
-APP	= APP_CDC
+APP	= APP_HID
 
 SRCS	= hw/serial.c hw/led.c hw/key.c hw/d12.c \
 	  core/delay.c core/putchar.c core/puts.c core/printf.c core/usb.c \
@@ -55,16 +55,16 @@ core/putchar.rel:core/putchar.c
 core/puts.rel:core/puts.c
 core/printf.rel:core/printf.c
 core/usb.rel:core/usb.c hw/d12.h include/printf.h core/delay.h \
-	include/usb/ch9.h core/usb.h app/hid/hid.h include/types.h
+	include/usb/ch9.h core/usb.h include/types.h
 ifeq ($(APP), APP_HID)
-app/hid/desc.rel:app/hid/desc.c include/usb/ch9.h app/hid/hid.h
+app/hid/desc.rel:app/hid/desc.c include/types.h include/usb/ch9.h app/hid/hid.h
 app/hid/hid.rel:app/hid/hid.c include/usb/ch9.h app/hid/hid.h \
-	hw/d12.h core/usb.h include/printf.h
-app/hid/main.rel:app/hid/main.c include/printf.h hw/key.h core/delay.h
+	hw/d12.h core/usb.h
+app/hid/main.rel:app/hid/main.c
 app/hid/reportkey.rel:app/hid/reportkey.c hw/d12.h hw/key.h include/usb/keycodes.h
 else ifeq ($(APP), APP_CDC)
-app/cdc/cdc.rel:app/cdc/cdc.c include/printf.h include/types.h include/usb/ch9.h \
+app/cdc/cdc.rel:app/cdc/cdc.c include/types.h include/usb/ch9.h \
 	hw/d12.h app/cdc/cdc.h core/usb.h
-app/cdc/desc.rel:app/cdc/desc.c include/types.h
-app/cdc/main.rel:app/cdc/main.c include/printf.h
+app/cdc/desc.rel:app/cdc/desc.c include/types.h include/usb/ch9.h
+app/cdc/main.rel:app/cdc/main.c
 endif
