@@ -47,7 +47,7 @@ void usb_irq(void) __interrupt 0
 		d12_read_last_transaction_status(D12_EPINDEX_2_OUT);
 	} else if (status & D12_INT_EP2_IN) {
 		d12_read_last_transaction_status(D12_EPINDEX_2_IN);
-	}else {
+	} else {
 		printf("Unkown interrupt\n");
 	}
 }
