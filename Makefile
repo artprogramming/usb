@@ -60,7 +60,7 @@ ifeq ($(APP), APP_HID)
 app/hid/desc.rel:app/hid/desc.c include/types.h include/usb/ch9.h app/hid/hid.h
 app/hid/hid.rel:app/hid/hid.c include/usb/ch9.h app/hid/hid.h \
 	hw/d12.h core/usb.h
-app/hid/main.rel:app/hid/main.c hw/key.h
+app/hid/main.rel:app/hid/main.c hw/key.h core/usb.h include/usb/ch9.h
 app/hid/reportkey.rel:app/hid/reportkey.c hw/d12.h hw/key.h include/usb/keycodes.h
 else ifeq ($(APP), APP_CDC)
 app/cdc/cdc.rel:app/cdc/cdc.c include/types.h include/usb/ch9.h \
