@@ -26,7 +26,6 @@ static void usb_get_descriptor(struct setup_packet *setup);
 static void usb_set_address(uint8_t addr);
 static void usb_set_configuration(uint8_t config);
 static void usb_get_configuration(void);
-static void usb_set_device_state(enum usb_device_state new_state);
 
 void usb_irq(void) __interrupt 0
 {
